@@ -59,5 +59,88 @@ mysql详细笔记整理
       1.添加数据
             insert into 表名（列名，列名...）values(1，name,....) 
             insert into 表名 values（1,name,...）;所有的列都要写
+      2.删除数据
+            delete form 表名 where id=xxx;
+            delete form 表名 删除表里所有的数据（不推荐）
+            truncate table 表名 删除表并重新建立一个空表（推荐） 
+      3，修改数据
+            update 表名 set age=10,name=xxx where 条件
+            upddate 表名 set age=10 (所有的age都将改变)
             
-      
+            
+ ### DQL
+      1.基础查询
+            select name,age from 表名；
+            select distinct age from 表名（去除重复）
+            select math,english,math+ifnull(english,0) from stu(如果为null的话，就赋值为0)
+            select math 数学，englist as 英语 from stu;起别名
+            
+      2.条件查询
+            select * from student where age>=10 and age<20;
+            selcet * from student where age in(18,29,10);
+            select* from student where math is null;（不断为null不能使用=）
+            
+      3.like语句
+            1） _占位符
+            2) %匹配所有
+            select *from student where name like "%马%"（名字中包含马）
+            select* from student where name like "_马%"（名字中第二个字为马的名字）
+            
+       4.排序查询
+            select *from student order by math asc,english desc;(先以数学升序排，再以英语降序排)
+            
+       5。聚合函数
+            1）count计算个数（不包含null的值）
+            2）sum计算和
+            3）avg计算平均值
+            4）min.max计算最大，最小
+            select count(id) from student;
+       6.分组查询
+            select sex,min(math),count(id) from student order by gender;
+            把分数大于80的根据性别分成两组，同时分组后人数大于2
+            select sex,count(id) from student where math>80 order by gender having count(id)>2;
+            1）where 在分组前作用，having在分组后作用
+        7.分页查询
+            (从0开始后面的3条数据)
+            select * from student limit 0,3;
+### 多表查询
+      会产生笛卡尔积，所以需要限定
+     1.内连接查询
+        1）隐式：select*from t1,t2 where t1.name=t2.name;
+        2)显式：select*from t1 join t2 on t1.id=t2.id;
+     2.外连接
+       1） select t1.*,t2.name from tmp t1 left join dept t2 on t1.id=t2.id;查询的是左表，右表同理。
+     3.子查询
+       1) select*from emp where emp.'salary'=(select max(salary) from emp);
+       
+            
+        
+### 约束
+    1.分类：
+        1）非空约束 not null
+        2）唯一约束 unique
+        3) 外键约束
+            constraint 外键名称 froeign key(外键列名称) reference  table(主表列名称)；
+            alter table xxx drop froeign key 外键名称
+            添加外键约束，设置级联更新
+            alter table employee add constrains temp_key_fk forrign key(dep_id) references deparments(id) on update cascade on delete cascade;
+            
+        4）主键约束 primary key
+             alter table student drop primary key(删除主键)
+### 数据库设计范式
+    1.第一范式：每一列都是不可分割的原子数据
+    2.第二范式：在1nf基础上，非码属性必须完全依赖候选码
+    3.第三范式在2nf基础上，任何非主属性不依赖其他非主属性
+    
+### 数据库的备份与还原
+    备份:mysqldump -u -p > 保存的路径
+    还原：使用数据库 source 文件路径
+    
+    
+    
+             
+     
+            
+            
+            
+            
