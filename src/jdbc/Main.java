@@ -19,13 +19,15 @@ public class Main {
 ////        int count = statement.executeUpdate(sql);
 ////        System.out.println(count);
             String sql = "insert into student values(4,'meizu',16,120,null,null)";
-            String sql1="update student set name='apple' where id=4";
+            String sql1="update student set name='app' where id=4";
             sql(sql1);
+
+
     }
 
 
     public static void sql(String sql) throws SQLException {
-        Connection connection=JDBCUtil.getConnection();
+        Connection connection=DruidUtil.getConnection();
         Statement statement=connection.createStatement();
         int count=statement.executeUpdate(sql);
         System.out.println(count);

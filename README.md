@@ -338,6 +338,27 @@ public class JDBCUtil {
             statement.executeQuery();
             statement.close();
      6.事务
+        1）流程
+            1.connection。setAutoCommit(false);
+            2.connext.commit();
+            3.try{
+                connection.rollback();
+            }
+
+### 数据库连接池
+    1.c3p0
+        *导入c3p0包，和依赖包
+        *配置文件
+        *ComboPooledDataSource da=new ComboPoolDataSource();
+        *Connection c=da.getConection();
+     2.druid
+         *导入jar包
+         *DruidDataSourceFactory.createDataSource()
+         *getConnection()
+     
+        
+         
+     
         
          
 
