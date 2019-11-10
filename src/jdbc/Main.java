@@ -22,7 +22,6 @@ public class Main {
             String sql1="update student set name='app' where id=4";
             sql(sql1);
 
-
     }
 
 
