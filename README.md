@@ -22,7 +22,7 @@ mysql详细笔记整理
          2) use xxx;
         R:查询数据库
          1）show databases xxxxx;
-         2)show create databsses xxxx;查看已经创建的数据库
+         2)show create databases xxxx;查看已经创建的数据库
          3) select database();
         U:修改数据库
           1） alter database xxxx character set utf8;
@@ -160,6 +160,201 @@ mysql详细笔记整理
 ### 数据库的备份与还原
     备份:mysqldump -u -p > 保存的路径
     还原：使用数据库 source 文件路径
+ 
+ ### jdbc
+    quick start:
+```java
+        Class.forName("com.mysql.jdbc.Driver");
+        //获取connetion对象
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/db1", "root", "root");
+        //定义sql语句
+        String sql="update student set age=1 where id=1";
+        //获取执行sql的语句
+        Statement statement=connection.createStatement();
+        int count = statement.executeUpdate(sql);
+        System.out.println(count);
+```    
+
+    1.DriverManager:
+        1）注册驱动
+        *com.mysql.jdbc.Driver中的静态代码块会自动执行注册函数
+        在5。0之后的msyql会自动注册，可以省略Class.forname("jdbc.mysql.jdbc.Driver")
+        2）获取数据库连接
+        url:jdbc:mysql://localhost/3306/db1连接本地可以省略ip和port
+    2.Connection:
+        1)获取执行sql的对象
+            *Statement  createStatement();
+            *PreparedStatement preparedStatement(String sql);
+         2)管理事务
+            *开启事务：setAutoCommit(false);
+            *提交事务:commit();
+            *回滚事务 rollback();
+    3.Statement:
+        1)boolean execute(String sql) 不常用
+        2）int executeUpdate(String sql) 执行DML,DDL语句
+        3）ResultSet executeQUery(String sql) 执行DQL语句
+        
+     4.jdbc更新数据demo函数
+```java
+public static void sql(String sql) {
+    Statement statement=null;
+    Connection connection=null;
+    try{
+        Class.forName("com.mysql.jdbc.Driver");
+        connection = DriverManager.getConnection("jdbc:mysql:///db1", "root", "root");
+        statement=connection.createStatement();
+        int count=statement.executeUpdate(sql);
+        System.out.println(count);
+
+    } catch (ClassNotFoundException | SQLException e) {
+        e.printStackTrace();
+    }finally {
+        if(statement!=null){
+            try {
+                statement.close();
+            } catch (SQLException s) {
+                s.printStackTrace();
+            }
+        }
+        if(connection!=null){
+            try {
+                connection.close();
+            } catch (SQLException s) {
+                s.printStackTrace();
+            }
+        }
+    }
+}
+
+```   
+
+     5.ResultSet:
+     *next()向下移动一行
+     *getXXX(int index)获取数据
+     *getXXX(String colname);
+     
+```java
+public class JDBCUtil {
+    private static String user;
+    private static String password;
+    private static String url;
+
+    static {
+        ClassLoader classLoader=JDBCUtil.class.getClassLoader();
+        URL url1=classLoader.getResource("jdbc.properties");
+
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileReader(url1.getPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        url = properties.getProperty("url");
+        user = properties.getProperty("user");
+        password = properties.getProperty("password");
+    }
+
+    public static Connection getConnection() {
+        Connection connection=null;
+
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+             connection=DriverManager.getConnection(url,user,password);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return connection;
+    }
+
+    public static void close(Statement statement, Connection connection) {
+        if(statement!=null){
+            try{
+                statement.close();
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        try{
+            if(connection!=null){
+                connection.close();
+        }
+        }catch(SQLException s){
+            s.printStackTrace();
+        }
+    }
+
+    public static void close(ResultSet resultSet,Statement statement, Connection connection) {
+        if(resultSet!=null){
+            try{
+                resultSet.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+
+        if(statement!=null){
+            try{
+                statement.close();
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        try{
+            if(connection!=null){
+                connection.close();
+            }
+        }catch(SQLException s){
+            s.printStackTrace();
+        }
+
+    }
+    public static void close(PreparedStatement preparedStatement, Connection connection) {
+        if(preparedStatement!=null){
+            try {
+                preparedStatement.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        try{
+            if(connection!=null){
+                connection.close();
+            }
+        }catch(SQLException s){
+            s.printStackTrace();
+        }
+    }
+
+}
+```
+
+    5.PreparedStatement:
+        1）使用模拟流程
+            String sql=”select * from student where id=？“；
+            PreparedStatement statement = connecion.preparedSatement(sql);
+            stament.setInt(1,1);
+            statement.executeQuery();
+            statement.close();
+     6.事务
+        
+         
+
+
+     
+     
+        
+     
+                   
+
+
+
+
+
+    
+    
+  
     
     
     
