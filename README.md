@@ -18,11 +18,11 @@ mysql详细笔记整理
     1.操作数据库
      CRUD;
         C:创建数据库
-         1） create database xxxx if not exists;
+         1） create database if not exists xxx;
          2) use xxx;
         R:查询数据库
          1）show databases xxxxx;
-         2)show create databases xxxx;查看已经创建的数据库
+         2)show create database xxxx;查看已经创建的数据库
          3) select database();
         U:修改数据库
           1） alter database xxxx character set utf8;
@@ -114,6 +114,18 @@ mysql详细笔记整理
        1) select*from emp where emp.'salary'=(select max(salary) from emp);
        2)多行多列可以作为一个虚拟表
        
+       linux安装解决不要密码登录问题：
+         use mysql;
+        
+            > update user set authentication_string=password("你的密码") where user='root';  #(无password字段的版本,也就是版本<=5.7的)
+            > update user set password=password('你的密码') where user='root'; #(有password字段的版本,版本>5.7的)
+            
+            > update user set plugin="mysql_native_password"; 
+            
+            > flush privileges;
+            
+            > exit;
+       
        
             
         
@@ -125,7 +137,7 @@ mysql详细笔记整理
             constraint 外键名称 froeign key(外键列名称) reference  table(主表列名称)；
             alter table xxx drop froeign key 外键名称
             添加外键约束，设置级联更新
-            alter table employee add constrains temp_key_fk forrign key(dep_id) references deparments(id) on update cascade on delete cascade;
+            alter table employee add constrains temp_key_fk foreign key(dep_id) references deparments(id) on update cascade on delete cascade;
             
         4）主键约束 primary key
              alter table student drop primary key(删除主键)
@@ -355,13 +367,20 @@ public class JDBCUtil {
          *导入jar包
          *DruidDataSourceFactory.createDataSource()
          *getConnection()
+### Spring JDBC
+    *导入jar包
+    *创建JDBCTEmplate 对象依赖dataSource
+    *调用方法
+        1.update()
+        2.queryForMap();结果封装为map
+        3.queryForList():
+        4.query():封装为javabean
+        5.queryForObject();
      
         
          
      
-        
-         
-
+     
 
      
      
